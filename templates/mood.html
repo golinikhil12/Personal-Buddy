@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Add Mood</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f0f4f8;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #fff;
+            margin-top: 50px;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h2 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        select, textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: vertical;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        a {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .music-player {
+            margin-top: 30px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                margin: 20px;
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Track Your Mood</h2>
+        <form method="POST">
+            <label for="mood">Mood:</label>
+            <select name="mood" id="mood" required onchange="updateMusicPlayer()">
+                <option value="">Select your mood</option>
+                <option value="Happy">😊 Happy</option>
+                <option value="Sad">😢 Sad</option>
+                <option value="Angry">😠 Angry</option>
+                <option value="Anxious">😟 Anxious</option>
+                <option value="Excited">😄 Excited</option>
+            </select>
+
+            <label for="note">Note (optional):</label>
+            <textarea name="note" id="note" rows="4" placeholder="Write something about your mood..."></textarea>
+
+            <button type="submit">Save Mood</button>
+        </form>
+
+        <!-- Music & Mood Sync Player -->
+        <div class="music-player" id="music-player-container" style="display: none;">
+            <h3>🎶 Your Mood Playlist:</h3>
+            <iframe id="spotifyPlayer"
+                src=""
+                width="100%"
+                height="360"
+                style="border-radius:12px;"
+                frameborder="0"
+                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                loading="lazy">
+            </iframe>
+        </div>
+
+        <a href="{{ url_for('view_mood') }}">Back to Mood Log</a>
+    </div>
+
+    <!-- Mood Script -->
+    <script>
+        function updateMusicPlayer() {
+            const mood = document.getElementById("mood").value;
+            const player = document.getElementById("spotifyPlayer");
+
+            const moodPlaylists = {
+                "Happy": "3keTESbiRtRWgQ7PNKcjVO",     // Telugu Party Hits 🎉
+                "Sad": "1av2zkRTixA4TxFUbRCtPZ",       // Heartbreak Telugu 💔
+                "Angry": "2z6JQZ4yAAW0mM9CFeOXz6",     // Emotional/Mass Telugu 🔥
+                "Anxious": "37i9dQZF1DWUvHZA1zLcjW",   // Chill Telugu/Lo-fi 🌙
+                "Excited": "6jU6ss39JIkcn9g7M2fRKO"    // Workout Telugu 💪
+            };
+
+            if (mood && moodPlaylists[mood]) {
+                player.src = `https://open.spotify.com/embed/playlist/${moodPlaylists[mood]}?utm_source=generator&theme=0`;
+                document.getElementById("music-player-container").style.display = "block";
+            } else {
+                document.getElementById("music-player-container").style.display = "none";
+            }
+        }
+    </script>
+</body>
+</html>

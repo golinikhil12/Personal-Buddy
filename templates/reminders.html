@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h2>Your Daily Reminders ⏰</h2>
+
+<!-- Auto Fixed Reminders Info -->
+<div style="background: #f0f8ff; padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+    <h3>🚰 Water Intake Schedule (3 Liters/Day)</h3>
+    <p>These reminders are auto-set from 7 AM to 10 PM every 1 hour and 10 minutes.</p>
+
+    <ul>
+        {% for hour in range(7, 22) %}
+            {% if loop.index0 % 2 == 0 %}
+                <li>Drink water at {{ "%02d:00" % hour }}</li>
+            {% else %}
+                <li>Drink water at {{ "%02d:30" % hour }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+    <h3>🍽️ Food Reminders</h3>
+    <ul>
+        <li>Breakfast at 08:00 AM</li>
+        <li>Lunch at 01:00 PM</li>
+        <li>Dinner at 08:00 PM</li>
+    </ul>
+</div>
+
+<!-- Custom Reminders -->
+<h3>Add Your Custom Reminder</h3>
+<form method="POST" action="/add_reminder" onsubmit="notifyReminder()" style="margin-bottom: 20px;">
+    <input type="text" name="title" id="reminderTitle" placeholder="Reminder title" required>
+    <input type="time" name="time" id="reminderTime" required>
+    <button type="submit">Add Reminder</button>
+</form>
+
+<h3>Your Custom Reminders 📌</h3>
+<ul>
+    {% if reminders %}
+        {% for reminder in reminders %}
+            <li>
+                <strong>{{ reminder.title }}</strong> at {{ reminder.time }}
+                <a href="/delete_reminder/{{ reminder.id }}">❌ Delete</a>
+            </li>
+        {% endfor %}
+    {% else %}
+        <li>No custom reminders yet.</li>
+    {% endif %}
+</ul>
+
+<!-- Notification Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (Notification.permission !== 'granted') {
+            Notification.requestPermission();
+        }
+    });
+
+    function notifyReminder() {
+        const title = document.getElementById('reminderTitle').value;
+        const time = document.getElementById('reminderTime').value;
+        if (Notification.permission === 'granted' && title && time) {
+            new Notification("⏰ Reminder Set!", {
+                body: `"${title}" at ${time}`,
+                icon: 'https://cdn-icons-png.flaticon.com/512/484/484167.png'
+            });
+        }
+    }
+</script>
+
+{% endblock %}

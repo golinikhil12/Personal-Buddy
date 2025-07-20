@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>📋 Your Tasks</h2>
+
+<!-- Form to Add Task -->
+<form method="POST" action="/add_task" onsubmit="notifyTaskAdded()">
+    <input type="text" id="taskInput" name="title" placeholder="Task title" required>
+    <input type="date" name="due_date" required>
+    <button type="submit">Add Task</button>
+</form>
+
+<!-- Show Tasks -->
+<ul>
+    {% for task in tasks %}
+        <li>
+            <strong>{{ task.title }}</strong> — Due by {{ task.due_date }}
+            <a href="/delete_task/{{ task.id }}">❌ Delete</a>
+        </li>
+    {% else %}
+        <li>No tasks yet.</li>
+    {% endfor %}
+</ul>
+
+<!-- Notification Script -->
+<script>
+    // Ask for permission on page load
+    document.addEventListener('DOMContentLoaded', () => {
+        if (Notification.permission !== 'granted') {
+            Notification.requestPermission();
+        }
+    });
+
+    function notifyTaskAdded() {
+        const taskTitle = document.getElementById('taskInput').value;
+        if (Notification.permission === 'granted' && taskTitle.trim() !== '') {
+            new Notification("📝 Task Added", {
+                body: `Don't forget: "${taskTitle}"`,
+                icon: 'https://cdn-icons-png.flaticon.com/512/3468/3468372.png'
+            });
+        }
+    }
+</script>
+{% endblock %}

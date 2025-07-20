@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2>📝 Your Notes</h2>
+
+<form method="POST" action="{{ url_for('add_note') }}" onsubmit="notifyNote()">
+    <textarea name="content" id="noteContent" placeholder="Write a note..." required></textarea><br>
+    <button type="submit">Add Note</button>
+</form>
+
+<ul>
+    {% for note in notes %}
+    <li>
+        {{ note.content }}
+        <a href="{{ url_for('delete_note', id=note.id) }}">❌</a>
+    </li>
+    {% else %}
+    <p>No notes yet.</p>
+    {% endfor %}
+</ul>
+
+<!-- Notification Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        if (Notification.permission !== 'granted') {
+            Notification.requestPermission();
+        }
+    });
+
+    function notifyNote() {
+        const content = document.getElementById('noteContent').value;
+        if (Notification.permission === 'granted' && content) {
+            new Notification("📝 Note Added!", {
+                body: `"${content.substring(0, 50)}..."`,
+                icon: 'https://cdn-icons-png.flaticon.com/512/1828/1828925.png'
+            });
+        }
+    }
+</script>
+{% endblock %}
