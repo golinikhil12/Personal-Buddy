@@ -4,3 +4,4 @@ Flask-SQLAlchemy
 SpeechRecognition
 pyttsx3
 gunicorn
+gradio-client
