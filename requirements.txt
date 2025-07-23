@@ -3,5 +3,4 @@ Flask
 Flask-SQLAlchemy
 SpeechRecognition
 pyttsx3
-pyaudio
 gunicorn
